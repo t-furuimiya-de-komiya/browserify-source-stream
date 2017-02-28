@@ -7,6 +7,7 @@ module.exports = function makeBundle(self, filename, ...args)
 {
     let opts = Object.assign({}, watchify.args, ...args)
     let b = create()
+    exclude(opts.exclude)
     lookupExternalBundle(opts.external)
     useWatchify(opts.watchify)
 
@@ -30,6 +31,14 @@ module.exports = function makeBundle(self, filename, ...args)
     {
         if (wopts)
             b = watchify(b, Object.assign({}, wopts))
+    }
+
+    function exclude(x)
+    {
+        if (Array.isArray(x))
+            x.forEach(exclude)
+        else if (x != null)
+            b.exclude(x)
     }
 
     function lookupExternalBundle(ext)
